@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: OVUaVQNVo2c+9KXtdhcUrN4b+3AUgXuD9ZSEtw4kxDc= # Generate by 'openssl rand -base64 32'
+  expiration-ms: 3600000 # 1 hour
+
+# springdoc settings (swagger)
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
