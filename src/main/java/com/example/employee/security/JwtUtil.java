@@ -1,6 +1,7 @@
 package com.example.employee.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -43,14 +44,22 @@ public class JwtUtil {
         return getClaims(token).getSubject();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
+	public boolean validateToken(String token, UserDetails userDetails) {
+		boolean isValid = false;
+		try {
+			final String username = extractUsername(token);
+			isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+		} catch (JwtException | IllegalArgumentException e) {
+			System.err.println("Error in getClaims: " + e);
+		}
 
-    private Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
+		return isValid;
+
+	}
+
+	private Claims getClaims(String token) {
+		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();		
+	}
 
     private boolean isTokenExpired(String token) {
         return getClaims(token).getExpiration().before(new Date());
